@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard Agency — Client Review & Sign-Off Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0fdf4', 500: '#10b981', 600: '#059669', 700: '#047857' },
+            slate: { 850: '#141e33', 900: '#0f172a', 950: '#020617' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .pin-pulse { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.85; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Top App Navigation -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">
+          VA
+        </div>
+        <div>
+          <div class="text-xs font-semibold text-slate-400 tracking-wider uppercase">Client Sign-Off Environment</div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            Vanguard Creative × HyperScale Corp
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">Live Review</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Milestone Progress Pills -->
+    <div class="hidden md:flex items-center gap-6 text-xs">
+      <div class="flex items-center gap-2 text-slate-400">
+        <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center font-mono text-[10px]">1</span>
+        <span>Intake & Brief</span>
+        <i class="fa-solid fa-check text-emerald-400 text-[10px]"></i>
+      </div>
+      <div class="w-6 h-[1px] bg-slate-800"></div>
+      <div class="flex items-center gap-2 text-slate-400">
+        <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center font-mono text-[10px]">2</span>
+        <span>Wireframes & Copy</span>
+        <i class="fa-solid fa-check text-emerald-400 text-[10px]"></i>
+      </div>
+      <div class="w-6 h-[1px] bg-slate-800"></div>
+      <div class="flex items-center gap-2 font-semibold text-white">
+        <span class="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-mono text-[10px] font-bold">3</span>
+        <span>Creative High-Fi Specs</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      </div>
+      <div class="w-6 h-[1px] bg-slate-800"></div>
+      <div class="flex items-center gap-2 text-slate-500">
+        <span class="w-5 h-5 rounded-full bg-slate-900 border border-slate-800 text-slate-500 flex items-center justify-center font-mono text-[10px]">4</span>
+        <span>Production Sign-Off</span>
+      </div>
+    </div>
+
+    <!-- Quick Action / Status -->
+    <div class="flex items-center gap-3">
+      <div id="signoff-status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+        <i class="fa-solid fa-clock"></i> Client Review Open (2 Pins)
+      </div>
+      <button onclick="openSignOffModal()" id="main-signoff-btn" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+        <i class="fa-solid fa-file-signature"></i> Approve & Sign-Off
+      </button>
+    </div>
+  </header>
+
+  <!-- Deliverable Sub-Header Tabs -->
+  <div class="border-b border-slate-800/80 bg-slate-900/50 px-6 py-2.5 flex items-center justify-between text-xs">
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400">Deliverables in Milestone:</span>
+      <button onclick="switchTab(0)" id="tab-0" class="tab-btn px-3 py-1.5 rounded-md font-medium text-white bg-slate-800 border border-slate-700">1. SaaS Hero & Pitch Canvas</button>
+      <button onclick="switchTab(1)" id="tab-1" class="tab-btn px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-slate-200">2. Performance Ad Suite (3 Ratios)</button>
+      <button onclick="switchTab(2)" id="tab-2" class="tab-btn px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-slate-200">3. Checkout Transition UI</button>
+    </div>
+    <div class="text-slate-400 flex items-center gap-2">
+      <i class="fa-solid fa-crosshairs text-emerald-400 text-[11px]"></i>
+      <span>Click deliverable image to drop precision feedback pins</span>
+    </div>
+  </div>
+
+  <!-- Main Review Layout -->
+  <main class="flex-1 flex overflow-hidden">
+    <!-- Deliverable Canvas Area -->
+    <div class="flex-1 bg-slate-950/60 p-6 overflow-y-auto flex flex-col items-center justify-start relative select-none">
+      <div class="w-full max-w-4xl relative rounded-xl border border-slate-800 bg-slate-900 shadow-2xl overflow-hidden" id="canvas-container">
+        
+        <!-- Mock Deliverable Visual: Hero Mockup -->
+        <div id="deliverable-content" class="p-8 cursor-crosshair min-h-[580px] relative" onclick="handleCanvasClick(event)">
+          <!-- Browser Frame Top -->
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6 pointer-events-none">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+              <span class="ml-4 text-xs font-mono text-slate-500">https://hyperscale.health/growth-v3</span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500">Render Version: 2026.4.19</span>
+          </div>
+
+          <!-- Hero Content Mockup -->
+          <div class="space-y-8 text-center max-w-2xl mx-auto py-10 pointer-events-none">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+              <i class="fa-solid fa-sparkles text-[10px]"></i> Next-Gen Autonomous Health Intelligence
+            </div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Turn Clinical Diagnostic Data Into Instant Patient Action.
+            </h1>
+            <p class="text-slate-400 text-base leading-relaxed">
+              Empower enterprise healthcare providers with deterministic decision pipelines, zero-latency audit compliance, and seamless patient triage.
+            </p>
+            <div class="flex items-center justify-center gap-4 pt-4">
+              <span class="px-6 py-3 rounded-lg bg-emerald-500 text-slate-950 font-bold text-sm shadow-md">Deploy Clinical Pilot</span>
+              <span class="px-6 py-3 rounded-lg border border-slate-700 text-slate-300 font-semibold text-sm">Schedule Compliance Audit</span>
+            </div>
+          </div>
+
+          <!-- Feature Cards Grid -->
+          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/60 pointer-events-none">
+            <div class="p-4 rounded-lg bg-slate-850/60 border border-slate-800">
+              <i class="fa-solid fa-shield-halved text-emerald-400 mb-2"></i>
+              <div class="font-semibold text-sm text-white">HIPAA & SOC-2 Vault</div>
+              <div class="text-xs text-slate-400 mt-1">Zero-exposure deterministic keying.</div>
+            </div>
+            <div class="p-4 rounded-lg bg-slate-850/60 border border-slate-800">
+              <i class="fa-solid fa-bolt text-emerald-400 mb-2"></i>
+              <div class="font-semibold text-sm text-white">&lt;18ms Inference</div>
+              <div class="text-xs text-slate-400 mt-1">Sub-second emergency triage.</div>
+            </div>
+            <div class="p-4 rounded-lg bg-slate-850/60 border border-slate-800">
+              <i class="fa-solid fa-chart-line text-emerald-400 mb-2"></i>
+              <div class="font-semibold text-sm text-white">3.4x Retention Lift</div>
+              <div class="text-xs text-slate-400 mt-1">Verified across 14 hospital groups.</div>
+            </div>
+          </div>
+
+          <!-- Coordinate Feedback Pin Layer -->
+          <div id="pins-layer">
+            <!-- Pin 1 -->
+            <div class="absolute top-[165px] left-[710px] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10" onclick="selectPin(1, event)">
+              <div class="w-7 h-7 rounded-full bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg shadow-amber-500/40 border-2 border-white pin-pulse">
+                1
+              </div>
+            </div>
+
+            <!-- Pin 2 -->
+            <div class="absolute top-[285px] left-[190px] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10" onclick="selectPin(2, event)">
+              <div class="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg shadow-emerald-500/40 border-2 border-white">
+                2
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Feedback & Audit Trail -->
+    <aside class="w-96 border-l border-slate-800 bg-slate-900 flex flex-col justify-between">
+      <!-- Tabs for Notes vs Audit -->
+      <div class="border-b border-slate-800 flex text-xs font-semibold">
+        <button onclick="switchSidebarTab('feedback')" id="side-tab-feedback" class="flex-1 py-3 text-center border-b-2 border-emerald-500 text-white bg-slate-850/50 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-comment-dots text-emerald-400"></i> Pins & Revisions (<span id="pins-count">2</span>)
+        </button>
+        <button onclick="switchSidebarTab('audit')" id="side-tab-audit" class="flex-1 py-3 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-list-check"></i> Audit Ledger
+        </button>
+      </div>
+
+      <!-- Feedback List Content -->
+      <div id="feedback-panel" class="flex-1 overflow-y-auto p-4 space-y-3">
+        <!-- Pin Item 1 -->
+        <div id="card-pin-1" class="p-3.5 rounded-lg bg-slate-850 border border-amber-500/40 shadow-sm transition">
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-bold text-amber-400 flex items-center gap-1.5">
+              <span class="w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px]">1</span>
+              Typography & Copy
+            </span>
+            <span class="text-[10px] text-slate-500 font-mono">14m ago</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            "Can we test 'Autonomous Clinical Intelligence' instead of 'Autonomous Health'? Legal team prefers clinical framing for enterprise hospitals."
+          </p>
+          <div class="mt-2 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]">
+            <span class="text-slate-400"><i class="fa-solid fa-user-circle mr-1"></i> Sarah (Client VP)</span>
+            <span class="text-amber-400 font-semibold">Open Note</span>
+          </div>
+        </div>
+
+        <!-- Pin Item 2 -->
+        <div id="card-pin-2" class="p-3.5 rounded-lg bg-slate-850 border border-slate-800 shadow-sm transition">
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+              <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">2</span>
+              CTA Behavior
+            </span>
+            <span class="text-[10px] text-slate-500 font-mono">2h ago</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            "Primary green button looks sharp and verified against WCAG AA standards. Approved."
+          </p>
+          <div class="mt-2 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]">
+            <span class="text-slate-400"><i class="fa-solid fa-user-circle mr-1"></i> Marcus (Lead Creative)</span>
+            <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-check mr-1"></i> Resolved</span>
+          </div>
+        </div>
+
+        <div id="new-pin-helper" class="p-3 rounded-lg border border-dashed border-slate-800 text-center text-xs text-slate-500">
+          Click anywhere on the preview canvas to add coordinate-specific feedback.
+        </div>
+      </div>
+
+      <!-- Audit Ledger Content (hidden by default) -->
+      <div id="audit-panel" class="hidden flex-1 overflow-y-auto p-4 space-y-3 font-mono text-[11px]">
+        <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+          <div class="text-slate-500 flex justify-between"><span>EVENT: STAGE_SUBMIT</span><span>10:24 UTC</span></div>
+          <div class="text-slate-300 mt-1">Agency committed Deliverable Package v2.4 (sha: 8f9b23c)</div>
+        </div>
+        <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+          <div class="text-slate-500 flex justify-between"><span>EVENT: CLIENT_ACCESS</span><span>11:15 UTC</span></div>
+          <div class="text-slate-300 mt-1">Authorized token session opened: Sarah T. (VP Marketing)</div>
+        </div>
+        <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+          <div class="text-slate-500 flex justify-between"><span>EVENT: PIN_ANCHORED</span><span>11:42 UTC</span></div>
+          <div class="text-slate-300 mt-1">Pin #1 anchored at coords (X: 710px, Y: 165px)</div>
+        </div>
+      </div>
+
+      <!-- Client Approval Action Footer -->
+      <div class="p-4 border-t border-slate-800 bg-slate-950/80">
+        <div class="text-[11px] text-slate-400 mb-2 flex items-center justify-between">
+          <span>Milestone Completion Status</span>
+          <span class="font-bold text-white">80%</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mb-3">
+          <div class="h-full bg-emerald-500 rounded-full w-4/5"></div>
+        </div>
+        <button onclick="openSignOffModal()" class="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-lock text-[11px]"></i> Lock Milestone & Sign Off
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Sign-Off Modal -->
+  <div id="signoff-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-file-contract text-emerald-400"></i> Milestone Sign-Off & Lock
+        </div>
+        <button onclick="closeSignOffModal()" class="text-slate-500 hover:text-slate-300 text-sm">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <p class="text-xs text-slate-400 mb-4">
+        Signing off locks Deliverables v2.4 against any further unbilled scope revisions and authorizes the production phase according to the Master Service Agreement.
+      </p>
+      <div class="space-y-3 mb-5">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Authorizing Client Representative</label>
+          <input type="text" id="signer-name" value="Sarah Thorne — VP Commercial Marketing" class="w-full px-3 py-2 rounded bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Audit Signature Hash</label>
+          <div class="px-3 py-2 rounded bg-slate-950 border border-slate-800 text-[11px] font-mono text-emerald-400">
+            SIG-2026-SHA256-4b92f7e0291a84
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="confirmSignOff()" class="flex-1 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition">
+          Confirm Digital Sign-Off
+        </button>
+        <button onclick="closeSignOffModal()" class="px-4 py-2.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white text-xs font-semibold">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPins = 2;
+    function selectPin(id, e) {
+      if(e) e.stopPropagation();
+      switchSidebarTab('feedback');
+      const card = document.getElementById('card-pin-' + id);
+      if(card) {
+        card.scrollIntoView({ behavior: 'smooth' });
+        card.classList.add('ring-2', 'ring-emerald-500');
+        setTimeout(() => card.classList.remove('ring-2', 'ring-emerald-500'), 1500);
+      }
+    }
+
+    function handleCanvasClick(e) {
+      const rect = document.getElementById('canvas-container').getBoundingClientRect();
+      const x = Math.round(e.clientX - rect.left);
+      const y = Math.round(e.clientY - rect.top);
+      
+      const comment = prompt("Add precision feedback pin at (" + x + "px, " + y + "px):", "Please tweak the copy/layout here");
+      if(!comment) return;
+
+      currentPins++;
+      document.getElementById('pins-count').innerText = currentPins;
+
+      // Add pin DOM
+      const pinDiv = document.createElement('div');
+      pinDiv.className = 'absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10';
+      pinDiv.style.left = x + 'px';
+      pinDiv.style.top = y + 'px';
+      const thisPinId = currentPins;
+      pinDiv.onclick = (evt) => selectPin(thisPinId, evt);
+      pinDiv.innerHTML = '<div class="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg border-2 border-white">' + thisPinId + '</div>';
+      document.getElementById('pins-layer').appendChild(pinDiv);
+
+      // Add Card DOM
+      const card = document.createElement('div');
+      card.id = 'card-pin-' + thisPinId;
+      card.className = 'p-3.5 rounded-lg bg-slate-850 border border-emerald-500/40 shadow-sm transition';
+      card.innerHTML = '<div class="flex items-center justify-between text-xs mb-1.5"><span class="font-bold text-emerald-400 flex items-center gap-1.5"><span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">' + thisPinId + '</span>New Revision Pin</span><span class="text-[10px] text-slate-500 font-mono">Just now</span></div><p class="text-xs text-slate-300 leading-relaxed">"' + comment + '"</p><div class="mt-2 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px]"><span class="text-slate-400"><i class="fa-solid fa-user-circle mr-1"></i> Reviewer</span><span class="text-emerald-400 font-semibold">Active</span></div>';
+      
+      const panel = document.getElementById('feedback-panel');
+      panel.insertBefore(card, document.getElementById('new-pin-helper'));
+      switchSidebarTab('feedback');
+    }
+
+    function switchSidebarTab(tab) {
+      if(tab === 'feedback') {
+        document.getElementById('feedback-panel').classList.remove('hidden');
+        document.getElementById('audit-panel').classList.add('hidden');
+        document.getElementById('side-tab-feedback').classList.add('border-emerald-500', 'text-white', 'bg-slate-850/50');
+        document.getElementById('side-tab-feedback').classList.remove('border-transparent', 'text-slate-400');
+        document.getElementById('side-tab-audit').classList.remove('border-emerald-500', 'text-white', 'bg-slate-850/50');
+        document.getElementById('side-tab-audit').classList.add('border-transparent', 'text-slate-400');
+      } else {
+        document.getElementById('feedback-panel').classList.add('hidden');
+        document.getElementById('audit-panel').classList.remove('hidden');
+        document.getElementById('side-tab-audit').classList.add('border-emerald-500', 'text-white', 'bg-slate-850/50');
+        document.getElementById('side-tab-audit').classList.remove('border-transparent', 'text-slate-400');
+        document.getElementById('side-tab-feedback').classList.remove('border-emerald-500', 'text-white', 'bg-slate-850/50');
+        document.getElementById('side-tab-feedback').classList.add('border-transparent', 'text-slate-400');
+      }
+    }
+
+    function switchTab(index) {
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        if(i === index) {
+          btn.className = 'tab-btn px-3 py-1.5 rounded-md font-medium text-white bg-slate-800 border border-slate-700';
+        } else {
+          btn.className = 'tab-btn px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-slate-200';
+        }
+      });
+    }
+
+    function openSignOffModal() {
+      document.getElementById('signoff-modal').classList.remove('hidden');
+    }
+
+    function closeSignOffModal() {
+      document.getElementById('signoff-modal').classList.add('hidden');
+    }
+
+    function confirmSignOff() {
+      closeSignOffModal();
+      const badge = document.getElementById('signoff-status-badge');
+      badge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1.5';
+      badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Milestone Locked & Approved';
+      
+      const btn = document.getElementById('main-signoff-btn');
+      btn.className = 'px-4 py-2 rounded-lg bg-slate-800 text-slate-400 font-semibold text-xs cursor-default flex items-center gap-2';
+      btn.innerHTML = '<i class="fa-solid fa-lock"></i> Signed Off & Archived';
+      btn.onclick = null;
+
+      alert("Digital Sign-off confirmed! Deliverables are locked into production ledger.");
+    }
+  </script>
+</body>
+</html>
